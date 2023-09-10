@@ -6,7 +6,7 @@ function readFileA () {
     let reader = new FileReader();
     reader.addEventListener("loadend", () => {
         //split the content by lines
-        let lines = reader.result.split('\n');
+        let lines = reader.result.split(/\r?\n/);
 
         //Initialize a variable to store the result HTML
         let sumValuesHTML ="";
@@ -43,13 +43,17 @@ function readFileA () {
 
 document.getElementById("downloadButton").addEventListener("click", function() {
     //get the content of the div
-    var decdieValuesDiv = document.getElementById("decideValues");
-    var content = decdieValuesDiv.textContent;
-    var decideText = content.split(/\r?\n/);
+    const content = document.getElementById("decideValues").innerHTML;
 
-    //create a blob with the content and speccify MIME type as plain text
-    if (decideText) {
-    var blob = new Blob([decideText], {type: "text/plain"});
+    //extract the decide values and join them with line breaks
+    const decideValues = content.match(/\b[01]\b/g);
+
+    if (decideValues) {
+        //join the decide values with line breaks
+        const decideText = decideValues.join('\n');
+
+        //create a blob with the content and speccify MIME type as plain text
+        var blob = new Blob([decideText], {type: "text/plain"});
     
     //create a downloead link
     var a = document.createElement("a");
